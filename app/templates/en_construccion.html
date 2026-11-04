@@ -1,0 +1,15 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}{{ modulo }} - Miscelia{% endblock %}
+
+{% block content %}
+<div class="text-center py-5">
+    <div class="display-3 mb-3">{{ icono }}</div>
+    <h3 class="fw-bold">{{ modulo }}</h3>
+    <p class="text-muted">{{ descripcion }}</p>
+    <span class="badge bg-warning text-dark mb-4">🚧 Módulo en construcción</span>
+    <div>
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline-secondary btn-sm fw-semibold">⬅ Volver al Menú Principal</a>
+    </div>
+</div>
+{% endblock %}

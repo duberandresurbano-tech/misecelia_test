@@ -1,0 +1,20 @@
+/* Estilos globales para Miscelia POS */
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Efecto hover suave para las tarjetas del dashboard */
+.card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
+}
+
+/* Estilos personalizados para la barra de navegación */
+.navbar-brand {
+    letter-spacing: 0.5px;
+}

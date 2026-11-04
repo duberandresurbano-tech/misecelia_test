@@ -1,0 +1,134 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Panel Principal - Miscelia{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <!-- 🔔 Alerta de Pedidos QR Entrantes (solo si hay pendientes) -->
+    {% if pedidos_pendientes %}
+    <div class="alert alert-warning d-flex justify-content-between align-items-center shadow-sm mb-4" role="alert">
+        <div>
+            <span class="fw-bold">🔔 ALERTA DE PEDIDOS QR ENTRANTES:</span>
+            <span class="badge bg-danger ms-2">
+                ¡Tienes {{ pedidos_pendientes }} pedido{{ '' if pedidos_pendientes == 1 else 's' }} QR pendiente{{ '' if pedidos_pendientes == 1 else 's' }}!
+            </span>
+        </div>
+        <a href="{{ url_for('qr_portal.index') }}" class="btn btn-sm btn-dark fw-bold">
+            📋 Ir a Gestión de Pedidos QR
+        </a>
+    </div>
+    {% endif %}
+
+    <!-- 🚀 Accesos Directos Principales (Operación Diaria) -->
+    <h5 class="fw-bold text-secondary mb-3">🚀 ACCESOS DIRECTOS PRINCIPALES <span class="text-muted fs-6">(Operación Diaria)</span></h5>
+    
+    <div class="row g-3 mb-4">
+        <!-- 1. Punto POS -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 text-center p-3 hover-card">
+                <div class="card-body">
+                    <div class="fs-2 mb-2">🛒</div>
+                    <h5 class="fw-bold text-dark">1. PUNTO POS</h5>
+                    <p class="text-muted small mb-3">(Venta Rápida)</p>
+                    <a href="{{ url_for('pos.index') }}" class="btn btn-outline-primary btn-sm w-100 fw-semibold">Ingresar</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Productos -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 text-center p-3">
+                <div class="card-body">
+                    <div class="fs-2 mb-2">📦</div>
+                    <h5 class="fw-bold text-dark">2. PRODUCTOS</h5>
+                    <p class="text-muted small mb-3">(Catálogo y Stock)</p>
+                    <a href="{{ url_for('inventario.index') }}" class="btn btn-outline-primary btn-sm w-100 fw-semibold">Ingresar</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Inventario -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 text-center p-3">
+                <div class="card-body">
+                    <div class="fs-2 mb-2">📊</div>
+                    <h5 class="fw-bold text-dark">3. INVENTARIO</h5>
+                    <p class="text-muted small mb-3">(Bodega y Stock)</p>
+                    <a href="{{ url_for('inventario.index') }}" class="btn btn-outline-primary btn-sm w-100 fw-semibold">Ingresar</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Corte de Caja -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 text-center p-3">
+                <div class="card-body">
+                    <div class="fs-2 mb-2">💵</div>
+                    <h5 class="fw-bold text-dark">4. CORTE DE CAJA</h5>
+                    <p class="text-muted small mb-3">(Resumen del Día)</p>
+                    <a href="{{ url_for('finanzas.index') }}" class="btn btn-outline-success btn-sm w-100 fw-semibold">Ingresar</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Proveedores -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 text-center p-3">
+                <div class="card-body">
+                    <div class="fs-2 mb-2">🚚</div>
+                    <h5 class="fw-bold text-dark">5. PROVEEDORES</h5>
+                    <p class="text-muted small mb-3">(Compras y Surtido)</p>
+                    <a href="#" class="btn btn-outline-secondary btn-sm w-100 fw-semibold">Ingresar</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. Finanzas -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 text-center p-3">
+                <div class="card-body">
+                    <div class="fs-2 mb-2">📈</div>
+                    <h5 class="fw-bold text-dark">6. FINANZAS</h5>
+                    <p class="text-muted small mb-3">(Histórico Macro)</p>
+                    <a href="{{ url_for('finanzas.index') }}" class="btn btn-outline-success btn-sm w-100 fw-semibold">Ingresar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📊 Resumen Rápido de Hoy -->
+    <div class="card shadow-sm border-0 p-3 bg-light">
+        <h6 class="fw-bold text-secondary mb-3">📊 RESUMEN RÁPIDO DE HOY</h6>
+        <div class="row text-center">
+            <div class="col-md-6 border-end">
+                <p class="text-muted small mb-1">Total Ventas Hoy</p>
+                <h4 class="fw-bold text-success">${{ "{:,.0f}".format(resumen.ventas) }}</h4>
+                <div class="d-flex justify-content-center flex-wrap gap-3 small text-muted mt-2">
+                    {% for medio, total in ventas_por_medio %}
+                        <span>{{ medio }}: <strong>${{ "{:,.0f}".format(total) }}</strong></span>
+                    {% else %}
+                        <span>Aún no hay ventas hoy</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-6 border-end">
+                        <p class="text-muted small mb-1">Productos Agotados</p>
+                        <h5 class="fw-bold {{ 'text-danger' if productos_agotados else 'text-success' }}">
+                            {{ productos_agotados }}
+                            {% if productos_agotados %}<span class="fs-6">(Atención)</span>{% endif %}
+                        </h5>
+                    </div>
+                    <div class="col-6">
+                        <p class="text-muted small mb-1">Pedidos QR Atendidos</p>
+                        <h5 class="fw-bold text-primary">{{ pedidos_atendidos }}</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
