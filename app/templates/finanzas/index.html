@@ -1,87 +1,92 @@
 {% extends 'layouts/base.html' %}
 
-{% block title %}Finanzas y Caja - Miscelia{% endblock %}
+{% block title %}Finanzas Macro e Historial - Miscelia{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-
-    <!-- Encabezado del Módulo -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<div class="container-fluid py-4" style="background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); min-height: 90vh; border-radius: 1rem;">
+    
+    <!-- Encabezado Estilizado -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 px-3 gap-3">
         <div>
-            <h3 class="fw-bold text-dark mb-1">📈 Módulo de Finanzas y Corte de Caja</h3>
-            <p class="text-muted small mb-0">Resumen del día {{ resumen.fecha }}: ingresos, gastos y compras.</p>
+            <h2 class="text-white fw-bold mb-1" style="letter-spacing: 0.5px;">📈 Finanzas y Reportes Históricos Macro</h2>
+            <p class="text-indigo-200 small mb-0 text-info">Consolidado general de rentabilidad y comparativas a gran escala</p>
         </div>
-        <div>
-            <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline-secondary btn-sm fw-semibold">
-                ⬅ Volver al Menú Principal
+        
+        <!-- Filtros Temporales (Día, Días, Mes, Meses, Año, Años) -->
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+            <div class="btn-group btn-group-sm shadow-sm" role="group" style="background-color: #0b0f19; border: 1px solid #374151; border-radius: 0.5rem; padding: 3px;">
+                <a href="{{ url_for('finanzas.index', filtro='dia') }}" class="btn text-light border-0 px-2 rounded-2 {{ 'fw-bold' if filtro_actual == 'dia' else '' }}" style="{{ 'background-color: #4f46e5;' if filtro_actual == 'dia' else '' }}">Día</a>
+                <a href="{{ url_for('finanzas.index', filtro='dias') }}" class="btn text-light border-0 px-2 rounded-2 {{ 'fw-bold' if filtro_actual == 'dias' else '' }}" style="{{ 'background-color: #4f46e5;' if filtro_actual == 'dias' else '' }}">Días</a>
+                <a href="{{ url_for('finanzas.index', filtro='mes') }}" class="btn text-light border-0 px-2 rounded-2 {{ 'fw-bold' if filtro_actual == 'mes' else '' }}" style="{{ 'background-color: #4f46e5;' if filtro_actual == 'mes' else '' }}">Mes</a>
+                <a href="{{ url_for('finanzas.index', filtro='meses') }}" class="btn text-light border-0 px-2 rounded-2 {{ 'fw-bold' if filtro_actual == 'meses' else '' }}" style="{{ 'background-color: #4f46e5;' if filtro_actual == 'meses' else '' }}">Meses</a>
+                <a href="{{ url_for('finanzas.index', filtro='año') }}" class="btn text-light border-0 px-2 rounded-2 {{ 'fw-bold' if filtro_actual == 'anio' else '' }}" style="{{ 'background-color: #4f46e5;' if filtro_actual == 'anio' else '' }}">Año</a>
+                <a href="{{ url_for('finanzas.index', filtro='años') }}" class="btn text-light border-0 px-2 rounded-2 {{ 'fw-bold' if filtro_actual == 'anios' else '' }}" style="{{ 'background-color: #4f46e5;' if filtro_actual == 'anios' else '' }}">Años</a>
+            </div>
+            <a href="{{ url_for('main.index') }}" class="btn btn-dark text-white fw-semibold px-3 shadow-sm border border-secondary" style="background-color: #090d16; border-color: #312e81 !important;">
+                ⬅️ Volver
             </a>
         </div>
     </div>
 
-    <!-- Tarjetas de Resumen Financiero -->
-    <div class="row g-3 mb-4">
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0 p-3 bg-white border-start border-success border-4">
-                <p class="text-muted small mb-1">Total Ingresos / Ventas</p>
-                <h3 class="fw-bold text-success">${{ "{:,.0f}".format(resumen.ventas) }}</h3>
+    <!-- Tarjetas de Balance General de Ganancias -->
+    <div class="row g-3 mb-4 px-3">
+        <!-- Ingresos Totales -->
+        <div class="col-md-4">
+            <div class="card text-white border-0 shadow-lg p-3 rounded-4" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); border-left: 5px solid #38bdf8 !important;">
+                <p class="text-info small mb-1 fw-semibold text-uppercase">Ingresos Totales ({{ macro.periodo_activo }})</p>
+                <h3 class="fw-bold text-white mb-0">${{ "{:,.0f}".format(macro.ingresos_totales) }}</h3>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0 p-3 bg-white border-start border-danger border-4">
-                <p class="text-muted small mb-1">Total Gastos / Salidas</p>
-                <h3 class="fw-bold text-danger">${{ "{:,.0f}".format(resumen.gastos) }}</h3>
+        <!-- Gastos Totales (Gastos + Compras) -->
+        <div class="col-md-4">
+            <div class="card text-white border-0 shadow-lg p-3 rounded-4" style="background: linear-gradient(135deg, #1e1b4b 0%, #3b0764 100%); border-left: 5px solid #f43f5e !important;">
+                <p class="text-danger small mb-1 fw-semibold text-uppercase">Gastos y Compras Totales</p>
+                <h3 class="fw-bold text-white mb-0">${{ "{:,.0f}".format(macro.gastos_totales) }}</h3>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0 p-3 bg-white border-start border-warning border-4">
-                <p class="text-muted small mb-1">Compras a Proveedores</p>
-                <h3 class="fw-bold text-warning">${{ "{:,.0f}".format(resumen.compras) }}</h3>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0 p-3 bg-white border-start border-primary border-4">
-                <p class="text-muted small mb-1">Balance Neto del Día</p>
-                <h3 class="fw-bold text-primary">${{ "{:,.0f}".format(resumen.balance_neto) }}</h3>
+        <!-- Utilidad Neta Consolidada -->
+        <div class="col-md-4">
+            <div class="card text-white border-0 shadow-lg p-3 rounded-4" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-left: 5px solid #a855f7 !important;">
+                <p class="small mb-1 fw-semibold text-uppercase" style="color: #c084fc;">Utilidad Neta (Ganancia Real)</p>
+                <h3 class="fw-bold text-success mb-0">${{ "{:,.0f}".format(macro.utilidad_neta) }}</h3>
             </div>
         </div>
     </div>
 
-    <!-- Historial de movimientos del día -->
-    <div class="card shadow-sm border-0 p-4">
-        <h5 class="fw-bold text-secondary mb-3">📋 Registro de Movimientos de Caja</h5>
-        <div class="table-responsive">
-            <table class="table table-hover align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th>ID</th>
-                        <th>Hora</th>
-                        <th>Tipo</th>
-                        <th>Descripción</th>
-                        <th>Método</th>
-                        <th class="text-end">Monto</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for m in movimientos %}
-                    <tr>
-                        <td>{{ m.id }}</td>
-                        <td>{{ m.fecha_hora.strftime('%H:%M') }}</td>
-                        <td>{{ m.tipo }}</td>
-                        <td>{{ m.descripcion }}</td>
-                        <td>{{ m.metodo }}</td>
-                        <td class="text-end fw-semibold {{ 'text-success' if m.monto >= 0 else 'text-danger' }}">
-                            {{ "${:,.0f}".format(m.monto) if m.monto >= 0 else "-${:,.0f}".format(-m.monto) }}
-                        </td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="6" class="text-center text-muted py-4">
-                            No hay movimientos registrados para el corte de hoy todavía.
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <!-- Sección Inferior -->
+    <div class="row g-3 px-3">
+        <!-- Tabla de Historial -->
+        <div class="col-lg-7">
+            <div class="card text-light border-0 shadow-lg rounded-4 overflow-hidden h-100" style="background-color: #0b0f19;">
+                <div class="card-header py-3 px-4 border-bottom border-secondary d-flex justify-content-between align-items-center" style="background-color: #111827;">
+                    <h5 class="mb-0 fw-bold text-white">📊 Resumen Operativo del Periodo</h5>
+                    <span class="badge text-white px-3 py-2 rounded-pill" style="background-color: #4f46e5;">BD Conectada</span>
+                </div>
+                <div class="card-body p-5 text-center d-flex flex-column justify-content-center align-items-center">
+                    <div class="text-muted mb-2" style="font-size: 2.5rem;">📂</div>
+                    <h6 class="text-light">Filtro aplicado: <span class="text-info">{{ macro.periodo_activo }}</span></h6>
+                    <p class="text-muted small mb-0">Los datos se están consultando directamente de la base de datos corporativa.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel de Acciones / Reportes -->
+        <div class="col-lg-5">
+            <div class="card text-light border-0 shadow-lg rounded-4 h-100 d-flex flex-column justify-content-between" style="background-color: #0b0f19;">
+                <div class="card-header py-3 px-4 border-bottom border-secondary" style="background-color: #111827;">
+                    <h5 class="mb-0 fw-bold text-white">📉 Analítica y Reportes</h5>
+                </div>
+                <div class="card-body p-4 text-center d-flex flex-column justify-content-center align-items-center" style="min-height: 250px;">
+                    <div class="fs-1 mb-3 text-indigo" style="color: #818cf8;">🚀</div>
+                    <h6 class="text-light fw-bold">Módulo Operando al 100%</h6>
+                    <p class="text-muted small px-3">
+                        A medida que registres ventas y compras en el POS, el balance general se actualizará al instante según el filtro temporal que elijas.
+                    </p>
+                    <button class="btn text-white fw-bold py-2 px-4 shadow-sm rounded-3 mt-2" style="background-color: #030712; border: 1px solid #4f46e5;">
+                        Exportar Reporte Consolidado
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 

@@ -1,0 +1,123 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Punto de Venta - Miscelia{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3">
+    <!-- ENCABEZADO CON BOTÓN DE VOLVER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="text-light fw-bold mb-0">🛍️ Terminal de Punto de Venta</h3>
+        <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary btn-sm px-3">
+            ⬅️ Volver al Inicio
+        </a>
+    </div>
+    <div class="row g-3">
+        
+        <!-- COLUMNA IZQUIERDA: Catálogo y Buscador (Ocupa 8 columnas) -->
+        <div class="col-lg-8">
+            <div class="card bg-dark text-light border-secondary shadow-sm mb-3">
+                <div class="card-body">
+                    <!-- Buscador rápido -->
+                    <div class="input-group mb-3">
+                        <span class="input-group-text bg-secondary text-light border-secondary">🔍</span>
+                        <input type="text" class="form-control bg-dark text-light border-secondary" placeholder="Buscar producto por nombre o escanear código de barras...">
+                    </div>
+
+                    <!-- Filtros por categoría (Mock visual) -->
+                    <div class="d-flex gap-2 overflow-auto pb-2">
+                        <button class="btn btn-outline-light btn-sm active">Todos</button>
+                        <button class="btn btn-outline-secondary btn-sm text-light">Bebidas</button>
+                        <button class="btn btn-outline-secondary btn-sm text-light">Snacks</button>
+                        <button class="btn btn-outline-secondary btn-sm text-light">Aseo</button>
+                        <button class="btn btn-outline-secondary btn-sm text-light">Servicios</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grilla de Productos (Mock visual para diseño) -->
+            <div class="row row-cols-2 row-cols-md-3 g-3">
+                <!-- Tarjeta de Producto de ejemplo -->
+                <div class="col">
+                    <div class="card bg-dark text-light border-secondary h-100 shadow-sm product-card" style="cursor: pointer;">
+                        <div class="card-body d-flex flex-column justify-content-between">
+                            <div>
+                                <span class="badge bg-secondary mb-2">Bebidas</span>
+                                <h6 class="card-title fw-bold">Gaseosa Cola 400ml</h6>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <span class="text-success fw-bold fs-5">$ 2.500</span>
+                                <small class="text-muted">Stock: 24</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card bg-dark text-light border-secondary h-100 shadow-sm product-card" style="cursor: pointer;">
+                        <div class="card-body d-flex flex-column justify-content-between">
+                            <div>
+                                <span class="badge bg-secondary mb-2">Snacks</span>
+                                <h6 class="card-title fw-bold">Paquete de Papas</h6>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <span class="text-success fw-bold fs-5">$ 3.000</span>
+                                <small class="text-muted">Stock: 15</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMNA DERECHA: Ticket / Carrito de Venta (Ocupa 4 columnas) -->
+        <div class="col-lg-4">
+            <div class="card bg-dark text-light border-secondary shadow-lg h-100">
+                <div class="card-header border-secondary d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">🛒 Venta Actual</h5>
+                    <button class="btn btn-outline-danger btn-sm">🗑️ Vaciar</button>
+                </div>
+                
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <!-- Lista de elementos en el ticket -->
+                    <div class="ticket-items overflow-auto" style="max-height: 350px;">
+                        <ul class="list-group list-group-flush bg-transparent">
+                            <li class="list-group-item bg-transparent text-light border-secondary d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0">Gaseosa Cola 400ml</h6>
+                                    <small class="text-muted">1 x $ 2.500</small>
+                                </div>
+                                <span class="fw-bold">$ 2.500</span>
+                            </li>
+                            <li class="list-group-item bg-transparent text-light border-secondary d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0">Paquete de Papas</h6>
+                                    <small class="text-muted">2 x $ 3.000</small>
+                                </div>
+                                <span class="fw-bold">$ 6.000</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Totales y Botones de Cobro -->
+                    <div class="mt-3 pt-3 border-top border-secondary">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Subtotal:</span>
+                            <span>$ 8.500</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3 fs-4 fw-bold text-success">
+                            <span>Total:</span>
+                            <span>$ 8.500</span>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-success fw-bold py-2">💳 Cobrar / Facturar</button>
+                            <button class="btn btn-outline-secondary btn-sm">Espera / Pendiente</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

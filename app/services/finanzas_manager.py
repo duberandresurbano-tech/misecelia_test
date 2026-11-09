@@ -1,8 +1,6 @@
 from datetime import date, datetime, time, timedelta
 from decimal import Decimal
-
 from sqlalchemy import func
-
 from app import db
 from app.models import Compra, Gasto, Venta
 
@@ -107,3 +105,42 @@ class FinanzasManager:
             })
 
         return sorted(movimientos, key=lambda m: m["fecha_hora"])
+
+    @staticmethod
+    def obtener_finanzas_macro(filtro: str = 'meses') -> dict:
+        """
+        Calcula el balance global según el botón de filtro seleccionado en la interfaz macro:
+        'dia', 'dias', 'mes', 'meses', 'anio', 'anios'
+        """
+        hoy = date.today()
+        
+        if filtro == 'dia':
+            inicio, fin = rango_dia(hoy)
+        elif filtro == 'dias':
+            # Últimos 7 días
+            inicio = datetime.combine(hoy - timedelta(days=7), time.min)
+            fin = datetime.combine(hoy, time.max)
+        elif filtro == 'mes':
+            inicio, fin = rango_mes(hoy.year, hoy.month)
+        elif filtro == 'meses':
+            # Últimos 6 meses
+            inicio = datetime(hoy.year, hoy.month, 1) - timedelta(days=180)
+            fin = datetime.combine(hoy, time.max)
+        elif filtro == 'anio':
+            inicio, fin = rango_anio(hoy.year)
+        elif filtro == 'anios':
+            # Últimos 2 años
+            inicio = datetime(hoy.year - 2, 1, 1)
+            fin = datetime.combine(hoy, time.max)
+        else:
+            inicio, fin = rango_mes(hoy.year, hoy.month)
+
+        balance = FinanzasManager.calcular_balance(inicio, fin)
+
+        return {
+            "periodo_activo": filtro.capitalize(),
+            "ingresos_totales": balance["ventas"],
+            "gastos_totales": balance["gastos"] + balance["compras"], # Sumamos gastos + compras a proveedores
+            "utilidad_neta": balance["balance_neto"],
+            "historial": []  # Preparado para listar los movimientos agrupados próximamente
+        }

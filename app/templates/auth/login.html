@@ -5,6 +5,19 @@
 {% block content %}
 <div class="row justify-content-center align-items-center" style="min-height: 75vh;">
     <div class="col-md-5">
+        
+        <!-- Mensajes Flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm rounded-3 mb-3" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
         <div class="card shadow-sm border-0 p-4">
 
             <!-- Logo / Cabecera -->
@@ -35,6 +48,13 @@
                     <button type="submit" class="py-2 btn btn-primary fw-bold">INICIAR SESIÓN</button>
                 </div>
             </form>
+
+            <!-- Enlace limpio para ir a la nueva interfaz de Registro -->
+            <div class="text-center mt-3">
+                <a href="{{ url_for('auth.registro') }}" class="small text-decoration-none text-primary fw-semibold">
+                    ¿No tienes cuenta? Registra un Administrador 🚀
+                </a>
+            </div>
 
         </div>
     </div>

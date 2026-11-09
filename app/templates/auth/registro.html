@@ -1,0 +1,58 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Registrar Administrador - Miscelia{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 75vh;">
+    <div class="col-md-5">
+        
+        <!-- Mensajes Flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm rounded-3 mb-3" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="card shadow-sm border-0 p-4">
+
+            <!-- Cabecera -->
+            <div class="text-center mb-4">
+                <div class="fs-1 text-primary">⚡</div>
+                <h3 class="fw-bold mt-2">NUEVO ADMINISTRADOR</h3>
+                <p class="text-muted small">Crea la cuenta principal para iniciar</p>
+            </div>
+
+            <!-- Formulario de Registro -->
+            <form method="POST" action="{{ url_for('auth.registro') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-secondary small">Nombre Completo</label>
+                    <input type="text" name="nombre" class="form-control" required placeholder="Ej. Duber Andrés">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-secondary small">Usuario de Acceso</label>
+                    <input type="text" name="usuario_acceso" class="form-control" required placeholder="Ej. duber">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-secondary small">Contraseña</label>
+                    <input type="password" name="password" class="form-control" required placeholder="••••••••">
+                </div>
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="py-2 btn btn-primary fw-bold">GUARDAR EN LA BD 💾</button>
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-secondary btn-sm mt-2">Volver al Login</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

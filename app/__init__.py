@@ -16,6 +16,7 @@ RUTAS_PUBLICAS = {'auth.login', 'static'}
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
+    
 
     if not app.config.get('SECRET_KEY') or not app.config.get('SQLALCHEMY_DATABASE_URI'):
         raise RuntimeError(
@@ -37,8 +38,11 @@ def create_app(config_class=Config):
     from app.routes.main import main_bp
     from app.routes.pos import pos_bp
     from app.routes.qr_portal import qr_portal_bp
+    from app.routes.pos import pos_bp
+    from app.routes.proveedores import proveedores_bp
+    from app.routes.corte_caja import corte_caja_bp
 
-    for blueprint in (auth_bp, main_bp, finanzas_bp, inventario_bp, pos_bp, qr_portal_bp):
+    for blueprint in (auth_bp, main_bp, finanzas_bp, inventario_bp, pos_bp, qr_portal_bp, proveedores_bp, corte_caja_bp):
         app.register_blueprint(blueprint)
 
     # 4. Protección global: sin sesión iniciada, todo redirige al login

@@ -1,0 +1,132 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Corte de Caja - Miscelia{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4" style="background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); min-height: 90vh; border-radius: 1rem;">
+    
+    <!-- Encabezado Estilizado -->
+    <div class="d-flex justify-content-between align-items-center mb-4 px-3">
+        <div>
+            <h2 class="text-white fw-bold mb-1" style="letter-spacing: 0.5px;">💵 Corte de Caja Diario</h2>
+            <p class="text-indigo-200 small mb-0 text-info">Arqueo y control operacional del día: <strong class="text-white">{{ resumen.fecha }}</strong></p>
+        </div>
+        <a href="{{ url_for('main.index') }}" class="btn btn-dark text-white fw-semibold px-4 shadow-sm border border-secondary" style="background-color: #090d16; border-color: #312e81 !important;">
+            ⬅️ Volver al Inicio
+        </a>
+    </div>
+
+    <!-- Tarjetas de Resumen Operativo (Tonos Azul / Morado Luminoso) -->
+    <div class="row g-3 mb-4 px-3">
+        <!-- Ingresos -->
+        <div class="col-md-3">
+            <div class="card text-white border-0 shadow-lg p-3 rounded-4" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); border-left: 5px solid #38bdf8 !important;">
+                <p class="text-info small mb-1 fw-semibold text-uppercase">Total Ingresos / Ventas</p>
+                <h3 class="fw-bold text-white mb-0">${{ "{:,.0f}".format(resumen.ventas) }}</h3>
+            </div>
+        </div>
+        <!-- Gastos -->
+        <div class="col-md-3">
+            <div class="card text-white border-0 shadow-lg p-3 rounded-4" style="background: linear-gradient(135deg, #1e1b4b 0%, #3b0764 100%); border-left: 5px solid #f43f5e !important;">
+                <p class="text-danger small mb-1 fw-semibold text-uppercase">Total Gastos / Salidas</p>
+                <h3 class="fw-bold text-white mb-0">${{ "{:,.0f}".format(resumen.gastos) }}</h3>
+            </div>
+        </div>
+        <!-- Proveedores -->
+        <div class="col-md-3">
+            <div class="card text-white border-0 shadow-lg p-3 rounded-4" style="background: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 100%); border-left: 5px solid #fbbf24 !important;">
+                <p class="text-warning small mb-1 fw-semibold text-uppercase">Compras Proveedores</p>
+                <h3 class="fw-bold text-white mb-0">${{ "{:,.0f}".format(resumen.compras) }}</h3>
+            </div>
+        </div>
+        <!-- Balance Neto -->
+        <div class="col-md-3">
+            <div class="card text-white border-0 shadow-lg p-3 rounded-4" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-left: 5px solid #a855f7 !important;">
+                <p class="text-purple-300 small mb-1 fw-semibold text-uppercase" style="color: #c084fc;">Balance Neto del Día</p>
+                <h3 class="fw-bold text-white mb-0">${{ "{:,.0f}".format(resumen.balance_neto) }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenido Principal: Movimientos y Cierre -->
+    <div class="row g-3 px-3">
+        <!-- Columna Izquierda: Tabla de Movimientos -->
+        <div class="col-lg-8">
+            <div class="card text-light border-0 shadow-lg rounded-4 overflow-hidden" style="background-color: #0b0f19;">
+                <div class="card-header py-3 px-4 border-bottom border-secondary d-flex justify-content-between align-items-center" style="background-color: #111827;">
+                    <h5 class="mb-0 fw-bold text-white">📋 Registro de Movimientos de Caja Hoy</h5>
+                    <span class="badge bg-indigo text-white px-3 py-2 rounded-pill" style="background-color: #4f46e5;">En tiempo real</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover align-middle mb-0" style="background-color: transparent;">
+                            <thead style="background-color: #1f2937; color: #9ca3af;">
+                                <tr>
+                                    <th class="ps-4 py-3">ID</th>
+                                    <th class="py-3">Hora</th>
+                                    <th class="py-3">Tipo</th>
+                                    <th class="py-3">Descripción</th>
+                                    <th class="py-3">Método</th>
+                                    <th class="text-end pe-4 py-3">Monto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for m in movimientos %}
+                                <tr style="border-color: #1f2937;">
+                                    <td class="ps-4 text-muted fw-semibold">#{{ m.id }}</td>
+                                    <td>{{ m.fecha_hora.strftime('%H:%M') }}</td>
+                                    <td><span class="badge bg-secondary bg-opacity-50 text-light px-2 py-1">{{ m.tipo }}</span></td>
+                                    <td class="text-light">{{ m.descripcion }}</td>
+                                    <td class="text-info small">{{ m.metodo }}</td>
+                                    <td class="text-end pe-4 fw-bold {{ 'text-success' if m.monto >= 0 else 'text-danger' }}">
+                                        {{ "${:,.0f}".format(m.monto) if m.monto >= 0 else "-${:,.0f}".format(-m.monto) }}
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-5">
+                                        <div class="fs-1 mb-2">📂</div>
+                                        No hay movimientos registrados para el corte de hoy todavía.
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna Derecha: Panel de Cierre de Caja -->
+        <div class="col-lg-4">
+            <div class="card text-light border-0 shadow-lg rounded-4 h-100 d-flex flex-column justify-content-between" style="background-color: #0b0f19;">
+                <div class="card-header py-3 px-4 border-bottom border-secondary" style="background-color: #111827;">
+                    <h5 class="mb-0 fw-bold text-white">🔒 Arqueo y Cierre del Día</h5>
+                </div>
+                <div class="card-body p-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <p class="text-muted small mb-4" style="line-height: 1.6;">
+                            Al hacer clic en <strong class="text-white">Cerrar Caja</strong>, el sistema validará el efectivo físico, bloqueará las transacciones del día actual y guardará el consolidado histórico definitivo.
+                        </p>
+                        <div class="mb-3">
+                            <label class="form-label text-info small fw-bold">Efectivo físico contado en caja:</label>
+                            <input type="text" class="form-control text-white border-secondary shadow-sm py-2 px-3" placeholder="$ 0" style="background-color: #111827; border-color: #374151 !important; border-radius: 0.5rem;">
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-3 mt-4">
+                        <!-- Botón Negro Estilizado que Resalta -->
+                        <button class="btn text-white fw-bold py-3 shadow-sm rounded-3" style="background-color: #030712; border: 1px solid #4f46e5; transition: all 0.2s ease;">
+                            🔒 Cerrar Caja y Finalizar Día
+                        </button>
+                        <button class="btn btn-outline-light btn-sm py-2 rounded-3 text-muted border-secondary" style="background-color: transparent;">
+                            🖨️ Imprimir Reporte Parcial
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

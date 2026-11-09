@@ -40,6 +40,11 @@
                     <li class="nav-item ms-lg-3">
                         <span class="navbar-text small">👤 {{ session.get('nombre_usuario') }}</span>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint and request.endpoint.startswith('proveedores.') %}active{% endif %}" href="{{ url_for('proveedores.index') }}">
+                            🤝 Proveedores
+                        </a>
+                    </li>
                     <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
                         <form id="logout-form" action="{{ url_for('auth.logout') }}" method="POST" class="d-inline">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
