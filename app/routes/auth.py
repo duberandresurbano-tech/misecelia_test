@@ -58,14 +58,27 @@ def registro():
             flash('¡El usuario de acceso ya está registrado!', 'danger')
             return render_template('auth/registro.html')
 
-        # Crear el nuevo administrador
-        hash_pass = generate_password_hash(password)
+        # Crear el nuevo usuario (administrador inicial) sin depender de campos de texto obsoletos
         nuevo_admin = Usuario(
             nombre=nombre,
             usuario_acceso=usuario_acceso,
-            hash_contrasena=hash_pass,
             estado=True
         )
+        
+        # Aplicar el cifrado Argon2 usando el método del modelo
+        nuevo_admin.establecer_password(password)
+
+        # --- ASIGNACIÓN RELACIONAL DEL ROL ---
+        # Buscamos el rol 'Administrador' en la tabla roles que sembramos previamente
+        from app.models.usuario import Rol # Asegúrate de importar Rol si no está arriba
+        rol_admin = Rol.query.filter_by(nombre='Administrador').first()
+        
+        if rol_admin:
+            # Esto inserta automáticamente la relación en la tabla puente 'usuario_rol'
+            nuevo_admin.roles.append(rol_admin)
+        else:
+            flash('Error crítico: El rol de Administrador no está inicializado en la BD.', 'danger')
+            return render_template('auth/registro.html')
 
         db.session.add(nuevo_admin)
         db.session.commit()

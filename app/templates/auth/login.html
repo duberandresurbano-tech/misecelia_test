@@ -36,13 +36,20 @@
                     </label>
                     <input type="text" class="form-control" id="username" name="username" placeholder="ej. admin" required autofocus>
                 </div>
-
                 <div class="mb-3">
                     <label for="password" class="form-label fw-semibold text-secondary small">
                         🔒 Contraseña
                     </label>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="••••••••••••" required>
+                    <!-- Contenedor con posición relativa para el ojito flotante -->
+                <div class="position-relative">
+                    <input type="password" class="form-control shadow-none pe-5" id="password" name="password" placeholder="••••••••••••" required>
+                    
+                    <!-- Botón del ojito oculto por defecto (opacity: 0 y pointer-events: none) -->
+                    <span id="btnTogglePassword" class="position-absolute top-50 end-0 translate-middle-y me-3 text-muted" style="cursor: pointer; display: none; z-index: 5;" title="Mostrar/Ocultar contraseña">
+                        <i class="bi bi-eye-slash" id="iconoOjo" style="font-size: 1.1rem;"></i>
+                    </span>
                 </div>
+            </div>
 
                 <div class="d-grid gap-2">
                     <button type="submit" class="py-2 btn btn-primary fw-bold">INICIAR SESIÓN</button>
@@ -59,4 +66,38 @@
         </div>
     </div>
 </div>
+
+<!-- Script para el botón del ojito en la contraseña -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const inputPassword = document.getElementById('password');
+        const btnToggle = document.getElementById('btnTogglePassword');
+        const iconoOjo = document.getElementById('iconoOjo');
+
+        if (inputPassword && btnToggle && iconoOjo) {
+            // 1. Detectar cuando el usuario escribe para mostrar u ocultar el ícono
+            inputPassword.addEventListener('input', function () {
+                if (inputPassword.value.length > 0) {
+                    btnToggle.style.display = 'block'; // Aparece cuando hay texto
+                } else {
+                    btnToggle.style.display = 'none';  // Se oculta si está vacío
+                    // Si borra todo y estaba en modo texto, lo devolvemos a password por seguridad
+                    inputPassword.setAttribute('type', 'password');
+                    iconoOjo.classList.remove('bi-eye');
+                    iconoOjo.classList.add('bi-eye-slash');
+                }
+            });
+
+            // 2. Funcionalidad de mostrar/ocultar contraseña al hacer clic en el ojito
+            btnToggle.addEventListener('click', function () {
+                const tipo = inputPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+                inputPassword.setAttribute('type', tipo);
+
+                // Alternar clases de Bootstrap Icons
+                iconoOjo.classList.toggle('bi-eye');
+                iconoOjo.classList.toggle('bi-eye-slash');
+            });
+        }
+    });
+</script>
 {% endblock %}

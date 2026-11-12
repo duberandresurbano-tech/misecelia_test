@@ -10,7 +10,7 @@ migrate = Migrate()
 csrf = CSRFProtect()
 
 # Rutas que se pueden abrir sin iniciar sesión. Todo lo demás exige login.
-RUTAS_PUBLICAS = {'auth.login', 'static'}
+RUTAS_PUBLICAS = {'auth.login','auth.registro', 'static'}
 
 
 def create_app(config_class=Config):
